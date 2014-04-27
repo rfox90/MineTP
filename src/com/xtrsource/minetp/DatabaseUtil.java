@@ -72,7 +72,6 @@ public class DatabaseUtil {
 			while (rs.next()) {
 				if (rs.getString("username").equals(player)) {
 					Location l = new Location(Bukkit.getWorld(rs.getString("world")), rs.getDouble("x"), rs.getDouble("y"), rs.getDouble("z"), rs.getFloat("yaw"), rs.getFloat("pitch"));
-					stat.execute("DELETE FROM teleport_points WHERE username = '" + player + "';");
 					rs.close();
 					return l;
 				}
@@ -81,6 +80,17 @@ public class DatabaseUtil {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public boolean deleteTeleport(Player p) {
+		try {
+			PreparedStatement sth = conn.prepareStatement("delete from teleport_points WHERE usernam =? and id=?");
+			sth.setString(1, p.getName());
+			sth.setString(2, p.getUniqueId().toString());
+			return sth.execute();
+		} catch (SQLException e) {
+			return false;
+		}
 	}
 
 	public Boolean firstData(String player) {
