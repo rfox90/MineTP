@@ -63,11 +63,11 @@ public class MtpCommand implements CommandExecutor {
 			}
 
 			if (sender instanceof Player) {
+				Player p = (Player) sender;
 				if (!instance.permCheck((Player) sender, "minetp.teleportoffline")) {
 					sender.sendMessage(ChatColor.RED + instance.getConfig().getString("config.errormessages.nopermission"));
 					return true;
 				}
-				Player p = instance.getServer().getPlayer(((Player) sender).getUniqueId());
 				@SuppressWarnings("deprecation")
 				Player target = instance.getServer().getPlayer(args[0]);
 				if(p.getUniqueId() == target.getUniqueId()) {
