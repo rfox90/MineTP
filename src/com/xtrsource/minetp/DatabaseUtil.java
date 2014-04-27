@@ -33,7 +33,7 @@ public class DatabaseUtil {
 			stat = conn.createStatement();
 			stat.executeUpdate("create table if not exists teleport_points (username, pitch, world, x, y, yaw, z, teleporter);");
 		} catch (Exception e) {
-			System.out.println(e);
+			e.printStackTrace();
 		}
 	}
 
@@ -52,7 +52,7 @@ public class DatabaseUtil {
 			prep.addBatch();
 			prep.executeBatch();
 		} catch (Exception e) {
-
+			e.printStackTrace();
 		}
 	}
 
@@ -68,7 +68,7 @@ public class DatabaseUtil {
 				}
 			}
 		} catch (Exception e) {
-			System.out.println(e);
+			e.printStackTrace();
 		}
 		return null;
 	}
@@ -83,7 +83,7 @@ public class DatabaseUtil {
 				}
 			}
 		} catch (Exception e) {
-
+			e.printStackTrace();
 		}
 		return true;
 	}
@@ -99,7 +99,7 @@ public class DatabaseUtil {
 				}
 			}
 		} catch (Exception e) {
-
+			e.printStackTrace();
 		}
 		return "ERROR";
 	}
@@ -109,7 +109,7 @@ public class DatabaseUtil {
 			stat.execute("DELETE FROM teleport_points WHERE username = '" + player + "';");
 			return true;
 		} catch (Exception e) {
-
+			e.printStackTrace();
 		}
 		return false;
 	}
