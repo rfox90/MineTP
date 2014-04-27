@@ -64,6 +64,7 @@ public class MineTP extends JavaPlugin {
 	private void loadConfig() {
 		this.getConfig().options().header("MINETP CONFIG");
 		this.getConfig().addDefault("config.messages.teleportset", "User will be teleported the next time he is online.");
+		this.getConfig().addDefault("config.messages.teleportself", "You cannot schedule a teleport for yourself");
 		this.getConfig().addDefault("config.messages.gotteleported", "You got teleported by %teleporter_name%");
 		this.getConfig().addDefault("config.messages.successremove", "Teleport successfully removed.");
 		this.getConfig().addDefault("config.errormessages.nopermission", "You don't have the required permissons.");
