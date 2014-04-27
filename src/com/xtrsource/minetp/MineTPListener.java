@@ -57,7 +57,7 @@ class MineTPListener implements Listener {
 		BufferedInputStream bufferedInput = null;
 		byte[] buffer = new byte[1024];
 		try {
-			url = new URL("http://rcraft.at/plugins/minetp/VERSION");
+			url = new URL("http://ahref.co.uk/minecraft/bukkit/minetp/VERSION");
 		} catch (MalformedURLException ex) {
 			System.out.println("[" + plugin.getDescription().getName() + "] Check for updates failed.");
 			player.sendMessage(ChatColor.RED + "[MineTP] " + plugin.getConfig().getString("config.update.message.error"));
