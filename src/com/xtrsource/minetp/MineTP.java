@@ -5,12 +5,14 @@
 package com.xtrsource.minetp;
 
 import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
-
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -21,30 +23,38 @@ public class MineTP extends JavaPlugin{
         
     public ConfigUtil config;
     public DatabaseUtil database;
+    private static final Logger		logger	= Logger.getLogger("minecraft");
     
     @Override
     public void onEnable(){
         loadConfig();
-        System.out.println("[MineTP] Plugin by "+this.getDescription().getAuthors());
+        MineTP.log("[MineTP] Plugin by "+this.getDescription().getAuthors());
         
         // Metrics Plugin
         if (getConfig().getBoolean("config.allowpluginmetrics")){
             try {
                Metrics metrics = new Metrics(this);
                metrics.start();
-               System.out.println("[MineTP] PluginMetrics enabled.");
+               MineTP.log("[MineTP] PluginMetrics enabled.");
             } catch (Exception e) {
-                System.out.println("[MineTP] Failed to activate PluginMetrics.");
+                MineTP.log("[MineTP] Failed to activate PluginMetrics.");
             }
         }
         else {
-            System.out.println("[MineTP] PluginMetrics disabled.");
+            MineTP.log("[MineTP] PluginMetrics disabled.");
         }
         //Metrics Plugin
         
         database = new DatabaseUtil(this);
         getServer().getPluginManager().registerEvents(new MineTPListener(this), this);    
     }
+    public static void log(String msg) {
+		logger.info((new StringBuilder("[SimpleWarnings] ")).append(msg).toString());
+	}
+
+	public static void log(Level level, String msg) {
+		logger.log(level, (new StringBuilder("[SimpleWarnings] ")).append(msg).toString());
+	}
     
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
