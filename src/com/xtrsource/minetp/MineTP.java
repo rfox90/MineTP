@@ -18,7 +18,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class MineTP extends JavaPlugin {
 
 	public ConfigUtil			config;
-	public DatabaseUtil			database;
+	private DatabaseUtil			database;
 	private static final Logger	logger	= Logger.getLogger("minecraft");
 
 	@Override
