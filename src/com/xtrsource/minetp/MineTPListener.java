@@ -33,8 +33,8 @@ class MineTPListener implements Listener {
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		Player p = event.getPlayer();
 		if(p!=null) {
-			String teleporter = plugin.database.getTeleporterName(event.getPlayer().getName());
-			Location l = plugin.database.getLocation(event.getPlayer());
+			String teleporter = plugin.getDatabaseUtil().getTeleporterName(p.getName());
+			Location l = plugin.getDatabaseUtil().getLocation(p);
 			if (l != null) {
 				p.teleport(l);
 				p.getPlayer().sendMessage(ChatColor.YELLOW + plugin.getConfig().getString("config.messages.gotteleported").replace("%teleporter_name%", teleporter));
@@ -54,7 +54,7 @@ class MineTPListener implements Listener {
 	private void checkVersion(Player player) {
 
 		player.sendMessage(ChatColor.GREEN + "[" + plugin.getDescription().getName() + "] " + plugin.getConfig().getString("config.update.message.check"));
-		System.out.println("[" + plugin.getDescription().getName() + "] Check for updates ...");
+		MineTP.log("[" + plugin.getDescription().getName() + "] Check for updates ...");
 
 		PluginDescriptionFile descFile = plugin.getDescription();
 		URL url = null;
@@ -63,7 +63,7 @@ class MineTPListener implements Listener {
 		try {
 			url = new URL("http://ahref.co.uk/minecraft/bukkit/minetp/VERSION");
 		} catch (MalformedURLException ex) {
-			System.out.println("[" + plugin.getDescription().getName() + "] Check for updates failed.");
+			MineTP.log("[" + plugin.getDescription().getName() + "] Check for updates failed.");
 			player.sendMessage(ChatColor.RED + "[MineTP] " + plugin.getConfig().getString("config.update.message.error"));
 		}
 		try {
@@ -74,22 +74,22 @@ class MineTPListener implements Listener {
 				String version = new String(buffer, 0, bytesRead);
 				if (Float.valueOf(version) > Float.valueOf(descFile.getVersion())) {
 					player.sendMessage(ChatColor.GOLD + "[" + plugin.getDescription().getName() + "] " + plugin.getConfig().getString("config.update.message.newupdate"));
-					System.out.println("[" + plugin.getDescription().getName() + "] A newer Version is available.");
+					MineTP.log("[" + plugin.getDescription().getName() + "] A newer Version is available.");
 				} else {
 					if (version.equals(descFile.getVersion())) {
 						player.sendMessage(ChatColor.GREEN + "[" + plugin.getDescription().getName() + "] " + plugin.getConfig().getString("config.update.message.noupdate"));
-						System.out.println("[" + plugin.getDescription().getName() + "] " + plugin.getDescription().getName() + " is up to date.");
+						MineTP.log("[" + plugin.getDescription().getName() + "] " + plugin.getDescription().getName() + " is up to date.");
 					} else {
 						player.sendMessage(ChatColor.RED + "[" + plugin.getDescription().getName() + "] " + plugin.getConfig().getString("config.update.message.developementbuild"));
-						System.out.println("[" + plugin.getDescription().getName() + "] You are using a developementbuild.");
+						MineTP.log("[" + plugin.getDescription().getName() + "] You are using a developementbuild.");
 					}
 				}
 			}
 			bufferedInput.close();
 
 		} catch (IOException ex) {
-			System.out.println("[Measurement Tools] Check for updates failed!");
-			player.sendMessage(ChatColor.RED + "[Measurement Tools] " + plugin.getConfig().getString("config.update.message.error"));
+			MineTP.log("["+plugin.getDescription().getName()+"] Check for updates failed!");
+			player.sendMessage(ChatColor.RED + "["+plugin.getDescription().getName()+"]"+ plugin.getConfig().getString("config.update.message.error"));
 		}
 	}
 
