@@ -1,6 +1,8 @@
 package com.xtrsource.minetp;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -69,13 +71,21 @@ public class MtpCommand implements CommandExecutor {
 					return true;
 				}
 				@SuppressWarnings("deprecation")
-				Player target = instance.getServer().getPlayer(args[0]);
-				if(p.getUniqueId() == target.getUniqueId()) {
-					sender.sendMessage(ChatColor.GREEN + instance.getConfig().getString("config.messages.teleportself"));
-					return true;
+				OfflinePlayer target = instance.getServer().getPlayer(args[0]);
+				if(target== null) {
+					target = Bukkit.getOfflinePlayer(args[0]);
 				}
+				//TODO use a uuid fetcher.
+//				try {
+//					if(p.getUniqueId().compareTo(target.getUniqueId())==0) {
+//						sender.sendMessage(ChatColor.GREEN + instance.getConfig().getString("config.messages.teleportself"));
+//						return true;
+//					}
+//				} catch(Exception e) {
+//					MineTP.log("1.6.4 can't get an offline player's uuid");
+//				}
 				if(p != null) {
-					if (instance.getDatabaseUtil().hasTeleportWaiting(p)) {
+					if (!instance.getDatabaseUtil().hasTeleportWaiting(target)) {
 						instance.getDatabaseUtil().addData(target, p);
 						sender.sendMessage(ChatColor.GREEN + instance.getConfig().getString("config.messages.teleportset"));
 					} else {
