@@ -8,13 +8,13 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.plugin.PluginDescriptionFile;
 
 /**
@@ -23,7 +23,7 @@ import org.bukkit.plugin.PluginDescriptionFile;
  */
 class MineTPListener implements Listener {
 
-	MineTP	plugin;
+	private MineTP	plugin;
 
 	public MineTPListener(MineTP aThis) {
 		plugin = aThis;
@@ -31,11 +31,15 @@ class MineTPListener implements Listener {
 
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
-		String teleporter = plugin.database.getTeleporterName(event.getPlayer().getName());
-		Location l = plugin.database.getLocation(event.getPlayer().getName());
-		if (l != null) {
-			event.getPlayer().teleport(l);
-			event.getPlayer().sendMessage(ChatColor.YELLOW + plugin.getConfig().getString("config.messages.gotteleported").replace("%teleporter_name%", teleporter));
+		Player p = event.getPlayer();
+		if(p!=null) {
+			String teleporter = plugin.database.getTeleporterName(event.getPlayer().getName());
+			Location l = plugin.database.getLocation(event.getPlayer());
+			if (l != null) {
+				p.teleport(l);
+				p.getPlayer().sendMessage(ChatColor.YELLOW + plugin.getConfig().getString("config.messages.gotteleported").replace("%teleporter_name%", teleporter));
+				plugin.getDatabaseUtil().deleteTeleport(p);
+			}
 		}
 	}
 
