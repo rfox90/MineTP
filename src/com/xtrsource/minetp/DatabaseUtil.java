@@ -66,14 +66,17 @@ public class DatabaseUtil {
 		}
 	}
 
-	public Location getLocation(String player) {
+	public Location getLocation(Player p) {
 		try {
-			rs = stat.executeQuery("select * from teleport_points;");
-			while (rs.next()) {
-				if (rs.getString("username").equals(player)) {
-					Location l = new Location(Bukkit.getWorld(rs.getString("world")), rs.getDouble("x"), rs.getDouble("y"), rs.getDouble("z"), rs.getFloat("yaw"), rs.getFloat("pitch"));
-					rs.close();
-					return l;
+			PreparedStatement sth = conn.prepareStatement("select * from teleport_points where username=? and id=?;");
+			sth.setString(1, p.getName());
+			sth.setString(2,p.getUniqueId().toString());
+			if(sth.execute()){
+				while(rs.next()) {
+					if(rs.getString("username").equals(p.getName()) && rs.getString("id").equals(p.getUniqueId().toString())) {
+						Location l = new Location(Bukkit.getWorld(rs.getString("world")), rs.getDouble("x"), rs.getDouble("y"), rs.getDouble("z"), rs.getFloat("yaw"), rs.getFloat("pitch"));
+						return l;
+					}
 				}
 			}
 		} catch (Exception e) {
@@ -92,20 +95,27 @@ public class DatabaseUtil {
 			return false;
 		}
 	}
-
-	public Boolean firstData(String player) {
+	public boolean hasTeleportWaiting(Player p) {
 		try {
-			rs = stat.executeQuery("select * from teleport_points;");
-			while (rs.next()) {
-				if (rs.getString("username").equals(player)) {
-					rs.close();
-					return false;
+			PreparedStatement sth = conn.prepareStatement("select * from teleport_points WHERE usernam =? and id=?");
+			sth.setString(1, p.getName());
+			sth.setString(2, p.getUniqueId().toString());
+			if(sth.execute()) {
+				ResultSet res = sth.getResultSet();
+				while(res.next()) {
+					if(rs.getString("username").equals(p.getName())) {
+						return true;
+					}
 				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return true;
+		return false;
+	}
+	@Deprecated
+	public Boolean firstData(String player) {
+		return false;
 	}
 
 	public String getTeleporterName(String player) {
@@ -123,7 +133,7 @@ public class DatabaseUtil {
 		}
 		return "ERROR";
 	}
-
+	@Deprecated
 	public Boolean removeTeleport(String player) {
 		try {
 			stat.execute("DELETE FROM teleport_points WHERE username = '" + player + "';");
