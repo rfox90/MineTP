@@ -5,8 +5,10 @@
 package com.xtrsource.minetp;
 
 import java.sql.*;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 
 /**
  * 
@@ -31,28 +33,36 @@ public class DatabaseUtil {
 			Class.forName("org.sqlite.JDBC");
 			conn = DriverManager.getConnection("jdbc:sqlite:" + plugin.getDataFolder() + "/minetp.db");
 			stat = conn.createStatement();
-			stat.executeUpdate("create table if not exists teleport_points (username, pitch, world, x, y, yaw, z, teleporter);");
+			stat.executeUpdate("create table if not exists teleport_points (id,username, pitch, world, x, y, yaw, z, teleporter,teleporter_id);");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	public void addData(String player, String teleporter, Location l) {
+	public boolean addData(Player target, Player sender) {
 		try {
-			PreparedStatement prep = conn.prepareStatement("insert into teleport_points values (?, ?, ?, ?, ?, ?, ?, ?);");
-
-			prep.setString(1, player);
-			prep.setFloat(2, l.getPitch());
-			prep.setString(3, l.getWorld().getName());
-			prep.setDouble(4, l.getX());
-			prep.setDouble(5, l.getY());
-			prep.setFloat(6, l.getYaw());
-			prep.setDouble(7, l.getZ());
-			prep.setString(8, teleporter);
+			PreparedStatement prep = conn.prepareStatement("insert into teleport_points values (?,?, ?, ?, ?, ?, ?, ?, ?,?);");
+			prep.setString(1, target.getUniqueId().toString());
+			prep.setString(2, target.getName());
+			Location l = sender.getLocation();
+			prep.setFloat(3, l.getPitch());
+			prep.setString(4, l.getWorld().getName());
+			prep.setDouble(5, l.getX());
+			prep.setDouble(6, l.getY());
+			prep.setFloat(7, l.getYaw());
+			prep.setDouble(8, l.getZ());
+			prep.setString(9, sender.getName());
+			prep.setString(10, sender.getUniqueId().toString());
 			prep.addBatch();
-			prep.executeBatch();
-		} catch (Exception e) {
+			int[] res = prep.executeBatch();
+			if(res[0]>=0 || res[0]== PreparedStatement.SUCCESS_NO_INFO) {
+				return true;
+			} else {
+				return false;
+			}
+		} catch (SQLException e) {
 			e.printStackTrace();
+			return false;
 		}
 	}
 
