@@ -63,12 +63,16 @@ public class MtpCommand implements CommandExecutor {
 					sender.sendMessage(ChatColor.RED + instance.getConfig().getString("config.errormessages.nopermission"));
 					return true;
 				}
-
-				if (instance.getDatabaseUtil().firstData(args[0])) {
-					instance.getDatabaseUtil().addData(args[0], sender.getName(), instance.getServer().getPlayer(sender.getName()).getLocation());
-					sender.sendMessage(ChatColor.GREEN + instance.getConfig().getString("config.messages.teleportset"));
-				} else {
-					sender.sendMessage(ChatColor.RED + instance.getConfig().getString("config.errormessages.usernamealreadyused"));
+				Player p = instance.getServer().getPlayer(((Player) sender).getUniqueId());
+				@SuppressWarnings("deprecation")
+				Player target = instance.getServer().getPlayer(args[0]);
+				if(p != null) {
+					if (instance.getDatabaseUtil().firstData(args[0])) {
+						instance.getDatabaseUtil().addData(target, p);
+						sender.sendMessage(ChatColor.GREEN + instance.getConfig().getString("config.messages.teleportset"));
+					} else {
+						sender.sendMessage(ChatColor.RED + instance.getConfig().getString("config.errormessages.usernamealreadyused"));
+					}
 				}
 			}
 		}
