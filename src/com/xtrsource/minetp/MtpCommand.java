@@ -34,11 +34,15 @@ public class MtpCommand implements CommandExecutor {
 						sender.sendMessage(ChatColor.RED + instance.getConfig().getString("config.errormessages.nopermission"));
 						return true;
 					}
-					if (instance.getDatabaseUtil().removeTeleport(args[1])) {
-						sender.sendMessage(ChatColor.GREEN + instance.getConfig().getString("config.messages.successremove"));
-					} else {
-						sender.sendMessage(ChatColor.RED + instance.getConfig().getString("config.errormessages.removefaild"));
+					@SuppressWarnings("deprecation")
+					Player p = instance.getServer().getPlayer(args[1]);
+					if(p != null) {
+						if (instance.getDatabaseUtil().deleteTeleport(p)) {
+							sender.sendMessage(ChatColor.GREEN + instance.getConfig().getString("config.messages.successremove"));
+							return true;
+						}
 					}
+					sender.sendMessage(ChatColor.RED + instance.getConfig().getString("config.errormessages.removefaild"));
 					return true;
 				}
 			}
@@ -66,8 +70,12 @@ public class MtpCommand implements CommandExecutor {
 				Player p = instance.getServer().getPlayer(((Player) sender).getUniqueId());
 				@SuppressWarnings("deprecation")
 				Player target = instance.getServer().getPlayer(args[0]);
+				if(p.getUniqueId() == target.getUniqueId()) {
+					sender.sendMessage(ChatColor.GREEN + instance.getConfig().getString("config.messages.teleportself"));
+					return true;
+				}
 				if(p != null) {
-					if (instance.getDatabaseUtil().firstData(args[0])) {
+					if (instance.getDatabaseUtil().hasTeleportWaiting(p)) {
 						instance.getDatabaseUtil().addData(target, p);
 						sender.sendMessage(ChatColor.GREEN + instance.getConfig().getString("config.messages.teleportset"));
 					} else {
